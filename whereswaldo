@@ -1,0 +1,152 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="http://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    
+        <script>
+            var i = 0; 
+            var locations = [
+  [-26.938312,-68.74491499999999, "Ruta 31, Copiapó, III Región, Chile"],
+[60.534114,-149.55007899999998,"Sterling Hwy, Moose Pass, AK 99631"],
+[60.070409,6.542388999999957,"Eitrheimsvegen 32, 5750 Odda, Norway"],
+[30.184983,-84.72466199999997,"Co Rd 67, Sopchoppy, FL 32358"],
+[36.252972,136.90053699999999,"Shirakawa Hwy, Ogimachi, Shirakawa-mura, Ōno-gun, Gifu-ken 501-5627, Japan"],
+[48.865937,2.312376,"Avenue Franklin Delano Roosevelt, 75008 Paris, France"],
+[27.814125,86.713193,"Khunde Marg, Khumjung 56000, Nepal"],
+[36.2381539,137.9683151,"2 Chome-3-4 Jōsei, Matsumoto-shi, Nagano-ken 390-0875, Japan"],
+[64.0444798,-16.1711884,"Þjóðvegur, Iceland"],
+[42.658402,11.633269,"SP22, 58010 Sorano GR, Italy"],
+[30.3248983,35.4471292,"Nabataean Theatre at Petra, Jordan"],
+[47.51075,10.390309,"Jochstraße, 87541 Bad Hindelang, Germany"],
+[53.043081,57.064946,"Ekologicheskaya tropa, Respublika Bashkortostan, Russia, 453588"],
+[-8.4226166,115.3124971,"Jl. Werkudara, Tampaksiring, Kabupaten Gianyar, Bali 80552, Indonesia"],
+[35.659607,139.700378,"Shibuya Station, Tokoyo, Japan"],
+[50.087586,14.421231,"Staroměstské nám. 11-12, 110 00 Praha 1-Staré Město, Czech Republic"],
+[-13.165713,-72.545542,"Camino Inca, Peru"],
+[41.403286,2.174673,"Carrer de Mallorca, 401, 08013 Barcelona, Spain"],
+[-14.251967,-170.689851,"Rte 6, Vatia, Eastern, American Samoa"],
+[33.461503,126.939297,"Sunrise Peak, Jeju-do, South Korea"],
+[-64.731988,-62.594564,"Danco Island, Antartic Territory, Chile"],
+[27.17557,78.041462,"Dashehara Ghat Rd, Dharmapuri, Forest Colony, Tajganj, Agra, Uttar Pradesh 282006, India"],
+[68.19649,13.53183,"Uttakleivveien 53, 8370 Leknes, Norway"],
+[53.2783229,107.3506844,"Unnamed Rd, Irkutskaya oblast', Russia, 666137"],
+[59.9387245,30.3163621,"Dvortsovaya pl., 8, Sankt-Peterburg, Russia, 191186"],
+[40.4900264,-75.0729199,"Cedar Ln, Tinicum Township, PA 18920"],
+[14.5841104,120.9799109,"Manila, Metro Manila, Philipines"],
+[17.5707683,120.3886023,"47 Crisologo, Vigan City, 2700 Ilocos Sur, Philippines"],
+[10.6422373,122.2358045,"Noble St, Miagao, Iloilo, Philippines"],
+[18.0619395,120.5205914,"Marcos Ave, Paoay, Ilocos Norte, Philippines"],
+[17.5713349,120.3887765,"19 Crisologo, Vigan City, 2700 Ilocos Sur, Philippines"],
+[0.5738293,37.5750599,"Samburu National Reserve, Kenya"],
+[-1.3766622,36.7743556,"Magadi Rd, Nairobi, Kenya"]
+];
+            
+function nextImage(){
+                if (i == locations.length-1) {
+                    i = 0; 
+                } else { 
+                    i++;
+                }
+                lat = locations[i][0];
+                long = locations[i][1];
+                mapCenter = new google.maps.LatLng(lat,long);
+                  var marker = new google.maps.Marker({
+                    position: mapCenter,
+                    map: map,
+                    title: 'Where is Waldo?'
+                  });
+    map.setCenter(marker.getPosition());
+    panorama.setPosition(mapCenter);
+            }
+   
+
+Array.prototype.shuffle = function() {
+    var input = this;
+     
+    for (var i = input.length-1; i >=0; i--) {
+     
+        var randomIndex = Math.floor(Math.random()*(i+1)); 
+        var itemAtIndex = input[randomIndex]; 
+        
+        input[randomIndex] = input[i]; 
+        input[i] = itemAtIndex;
+    }
+    return input;
+};
+            
+locations.shuffle(); 
+            
+
+            var map;
+            var panorama;
+            
+            
+            function onMapClick(event){
+                document.getElementById("location").innerHTML = event.latLng.toString();
+            }
+            function initialize(){
+                console.log(i);
+                var lat = locations[i][0];
+                var long = locations[i][1];
+                //var name = document.getElementById('name').innerHTML
+                var mapDiv = document.getElementById('map-canvas');
+                var mapCenter = new google.maps.LatLng(lat,long);
+                var mapOptions = { 
+                    zoom: 17, 
+                    center: mapCenter, 
+                    mapTypeId: google.maps.MapTypeId.SATELLITE};
+                
+                map = new google.maps.Map(mapDiv, mapOptions);
+                
+                var markerOpts = {
+                    position: mapCenter,
+                    map: map,
+                    title: 'where is waldo',
+                    opacity: 0.75
+                };
+                var marker = new google.maps.Marker(markerOpts);
+                
+                var panoramaOptions = {
+                    position: mapCenter,
+                    pov: {
+                        heading: 175,
+                        pitch: 10,
+                    }
+                };
+                panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'),panoramaOptions);
+                
+                google.maps.event.addListener(map,'click',onMapClick);
+            }
+            google.maps.event.addDomListener(window,'load',initialize);
+            
+            
+            
+        </script>
+    <style>
+        body {
+            font-family:"Quicksand", sans-serif;
+            text-align: center;
+        }
+        h2 {
+            padding: 10px;
+        }
+        .btn {
+            margin-top: 10px;
+        }
+        
+    
+    </style>
+
+</head>
+<body>
+    <h1 id='name'> </h1>
+    <div id="location"></div>
+    <h2></h2>
+    <div id="map-canvas" style="height:250px"></div>
+    <div id="pano" style="height:250px"></div>
+    <button type="button" onclick="nextImage()" class="btn btn-default btn-lg">Click me!</button>
+</body>
+</html>
+
